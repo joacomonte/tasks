@@ -43,7 +43,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggleComplete, onEdit }) =
   return (
     <div className={`task-item ${task.completed ? 'completed' : ''}`}>
       <div className="task-content">
-        <div className="task-id">#{task.id}</div>
+        <div className="task-id">ID: {task.id}</div>
         {isEditing ? (
           <div className="edit-container">
             <input
