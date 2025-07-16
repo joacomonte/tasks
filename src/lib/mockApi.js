@@ -27,7 +27,7 @@ class MockApi {
    * @param {{page?: number, limit?: number}} options
    * @returns {Promise<{tasks: Array<object>, hasNextPage: boolean}>}
    */
-  async fetchTasks({ page = 1, limit = 50 }) {
+  async fetchTasks({ page = 1, limit = 20 }) {
     const latency = Math.random() * 600 + 400; // Latencia entre 400ms y 1000ms
     await new Promise(resolve => setTimeout(resolve, latency));
 
