@@ -27,28 +27,35 @@ export default function TaskList() {
   const [isLoadingTop, setIsLoadingTop] = useState(false);
 
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const isLoadingRef = useRef(false);
 
+  const lastItemRef = useRef<HTMLDivElement | null>(null);
+  const firstItemRef = useRef<HTMLDivElement | null>(null);
 
-  const lastItemRef = useCallback((node: HTMLDivElement | null) => {
+  const loadMoreRef = useCallback((node: HTMLDivElement | null) => {
     if (observerRef.current) observerRef.current.disconnect();
-  
-    if (node && hasNextPage && !isLoadingMore) {
+    
+    if (node && hasNextPage) {
       observerRef.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting) {
-            setIsLoadingMore(true);
-            setTimeout(() => {
-              const nextPage = page + 1;
-              setPage(nextPage);
-              handleLoadMoreBottom();
-            }, 600); 
+          if (entries[0].isIntersecting && !isLoadingRef.current) {
+            handleLoadMoreBottom();
           }
         },
-        { threshold: 1.0 }
+        { threshold: 1}
       );
       observerRef.current.observe(node);
     }
-  }, [hasNextPage, isLoadingMore]);
+  }, [hasNextPage]);
+  
+  // Add cleanup in useEffect
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   const fetchTasks = async (pageNum: number, loadDirection: 'top' | 'bottom' = 'bottom') => {
     try {
@@ -59,6 +66,14 @@ export default function TaskList() {
   
       if (loadDirection === 'bottom') {
         setIsLoadingMore(false);
+        isLoadingRef.current = false;
+        // Remove smooth scrolling for better performance
+        if (firstItemRef.current) {
+          firstItemRef.current.scrollIntoView({ 
+            behavior: 'auto', 
+            block: 'start' 
+          });
+        }
       } else {
         setIsLoadingTop(false);
       }
@@ -66,22 +81,32 @@ export default function TaskList() {
       console.error('Failed to fetch tasks:', error);
       if (loadDirection === 'bottom') {
         setIsLoadingMore(false);
+        isLoadingRef.current = false;
       } else {
         setIsLoadingTop(false);
       }
     }
   };
   
-  const handleLoadMoreBottom = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchTasks(nextPage, 'bottom');
-  };
-  
+  const handleLoadMoreBottom = useCallback(() => {
+    if (isLoadingRef.current) return;
+    
+    setIsLoadingMore(true);
+    isLoadingRef.current = true;
+    setPage((prev) => {
+      const newPage = prev + 1;
+      fetchTasks(newPage, 'bottom');
+      return newPage;
+    });
+  }, []);
+
   const handleLoadMoreTop = () => {
-    const prevPage = page - 1;
-    setPage(prevPage);
-    fetchTasks(prevPage, 'top');
+    setIsLoadingMore(true);
+    setPage((prev) => {
+      const newPage = prev - 1;
+      fetchTasks(newPage, 'top');
+      return newPage;
+    });
   };
 
   useEffect(() => {
@@ -111,15 +136,31 @@ export default function TaskList() {
           <TaskItem
             key={task.id}
             task={task}
-            ref={index === tasks.length - 1 ? lastItemRef : null}
+            ref={index === 0 ? firstItemRef : index === tasks.length - 1 ? lastItemRef : null}
           />
         ))}
       </div>
 
+      {hasNextPage && (
+        <div 
+          ref={loadMoreRef}
+          className=" text-center py-4 text-gray-500"
+        >
+          Keep scrolling to load more tasks
+        </div>
+      )}
+      {hasNextPage && (
+        <div 
+          ref={loadMoreRef}
+          className="mt-40 text-center py-4 text-gray-500"
+        >
+          Loading more tasks...
+        </div>
+      )}
+
       {isLoadingMore && (
         <div className="mt-6 text-center">
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500 mx-auto"></div>
-          <span className="text-gray-500">Loading...</span>
         </div>
       )}
 
