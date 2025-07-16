@@ -1,85 +1,277 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: black;
+.task-list-container {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f8fafc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  max-height: 500px;
+  overflow-y: auto;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-
-.task-list {
+.error-message {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 12px; /* Equivalent to space-y-3 */
-}
-
-.task-container {
-  padding: 16px; /* p-4 */
-  border: 1px solid #d1d5db; /* border-gray-300 */
-  border-radius: 8px; /* rounded-lg */
-  background-color: #ffffff; /* bg-white */
-}
-
-.task-container.task-completed {
-  background-color: #f9fafb; /* bg-gray-50 */
-  border-color: #e5e7eb; /* border-gray-200 */
-}
-
-.task-content {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px; /* gap-3 */
-}
-
-.task-checkbox {
-  width: 20px; /* w-5 */
-  height: 20px; /* h-5 */
-  border-radius: 9999px; /* rounded-full */
-  border: 2px solid #d1d5db; /* border-gray-300 */
-  margin-top: 2px; /* mt-0.5 */
-  display: flex;
+  justify-content: space-between;
   align-items: center;
+}
+
+.error-message button {
+  background-color: #b91c1c;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.load-button-container {
+  display: flex;
   justify-content: center;
+  margin: 12px 0;
 }
 
-.task-checkbox.checkbox-completed {
-  background-color: #22c55e; /* bg-green-500 */
-  border-color: #22c55e; /* border-green-500 */
+.load-button {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.checkbox-icon {
-  width: 12px; /* w-3 */
-  height: 12px; /* h-3 */
-  color: #ffffff; /* text-white */
-  margin: 0 auto;
-  margin-top: 2px; /* mt-0.5 */
+.load-button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+.load-button:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.task-item {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 12px;
+  transition: transform 0.1s;
+}
+
+.task-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.task-item.completed {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.task-id {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-bottom: 4px;
 }
 
 .task-text {
-  flex: 1;
-  color: #1f2937; /* text-gray-800 */
+  font-weight: 500;
+  margin-bottom: 4px;
 }
 
-.task-text.text-completed {
-  color: #6b7280; /* text-gray-500 */
-  text-decoration: line-through; /* line-through */
+.task-status {
+  font-size: 0.9rem;
+  color: #475569;
+}
+
+.loading-indicator {
+  text-align: center;
+  padding: 12px;
+  color: #64748b;
+  font-style: italic;
+}
+
+
+.task-item {
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.task-item.completed {
+  background-color: #f0f0f0;
+  color: #888;
+}
+
+.task-actions {
+  margin-top: 8px;
+}
+
+.task-actions button {
+  margin-right: 5px;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  margin: 12px 0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.task-item:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.task-item.completed {
+  background-color: #f8f8f8;
+  border-color: #e0e0e0;
+}
+
+.task-content {
+  flex: 1;
+}
+
+.task-id {
+  font-size: 0.75rem;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.task-text {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.task-item.completed .task-text {
+  color: #666;
+  text-decoration: line-through;
+}
+
+.task-status {
+  font-size: 0.85rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-block;
+}
+
+.task-status.completed {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.task-status.pending {
+  background-color: #fff8e1;
+  color: #ff8f00;
+}
+
+.task-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 16px;
+}
+
+.task-actions button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.status-button.complete {
+  background-color: #e3f2fd;
+  color: #1976d2;
+}
+
+.status-button.pending {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.edit-button {
+  background-color: #f5f5f5;
+  color: #616161;
+}
+
+.edit-button:hover {
+  background-color: #eeeeee;
+}
+
+.edit-container {
+  position: relative;
+  display: flex;
+  width: 60%;
+}
+
+.task-edit-input {
+  padding: 5px 50px 5px 10px;
+  width: 100%;
+  font-size: inherit;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.inline-edit-buttons {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  gap: 3px;
+}
+
+.save-button, .cancel-button {
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 14px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+}
+
+.save-button {
+  color: #4CAF50;
+}
+
+.save-button:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.cancel-button {
+  color: #f44336;
+}
+
+.cancel-button:hover {
+  background-color: rgba(244, 67, 54, 0.1);
 }
